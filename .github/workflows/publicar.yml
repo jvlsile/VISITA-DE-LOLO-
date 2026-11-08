@@ -16,7 +16,7 @@ concurrency:
 
 jobs:
   pruebas:
-    name: Pruebas (pizarra, portátil y móvil)
+    name: Pruebas (pizarra, portátil, móvil, iPad e iPhone)
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
@@ -26,7 +26,7 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
-      - run: npx playwright install --with-deps chromium
+      - run: npx playwright install --with-deps chromium webkit
       - run: npx playwright test
         env:
           CI: true
