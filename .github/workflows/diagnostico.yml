@@ -1,0 +1,19 @@
+# TEMPORAL: diagnóstico del robot en iPad (WebKit). Se borra antes de fusionar.
+name: Diagnóstico robot iPad
+on:
+  push:
+    branches: [pruebas-safari]
+jobs:
+  robot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm }
+      - run: npm ci
+      - run: npx playwright install --with-deps webkit
+      - run: npx playwright test tests/juegos.spec.js -g "robot" --project=ipad --retries=0 --timeout=60000 --reporter=list
+        env: { CI: true, DEBUG: "pw:api" }
+        continue-on-error: true
+      - run: for f in test-results/*/error-context.md; do echo "=== $f"; cat "$f"; done || true
